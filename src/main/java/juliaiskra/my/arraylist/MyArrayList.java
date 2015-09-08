@@ -2,18 +2,19 @@ package juliaiskra.my.arraylist;
 
 import java.lang.reflect.Array;
 import java.util.AbstractList;
+import java.util.Arrays;
 
 /**
  * @author Yuliya Kupryakova
  */
 public class MyArrayList<E> extends AbstractList<E> {
-    private final E[] array;
+    private int maxSize = 8;
+    private E[] array;
     private int size;
 
     public MyArrayList(Class<E> aClass) {
-        // todo expand array
         //noinspection unchecked
-        array = (E[]) Array.newInstance(aClass, 100);
+        array = (E[]) Array.newInstance(aClass, maxSize);
         this.size = 0;
     }
 
@@ -26,6 +27,12 @@ public class MyArrayList<E> extends AbstractList<E> {
     @Override
     public void add(int index, E element) {
         checkIndexBoundsForNewElements(index);
+
+        if (size == maxSize) {
+            maxSize = maxSize * 2;
+            resizeArray();
+        }
+
         size++;
         for (int i = index; i < size; i++) {
             element = replaceElement(i, element);
@@ -52,6 +59,32 @@ public class MyArrayList<E> extends AbstractList<E> {
     @Override
     public int size() {
         return size;
+    }
+
+    /**
+     * Trims the capacity of this <tt>ArrayList</tt> instance to be the list's current size.  An application can use
+     * this operation to minimize the storage of an <tt>ArrayList</tt> instance.
+     */
+    public void trimToSize() {
+        maxSize = size;
+        resizeArray();
+    }
+
+    /**
+     * Increases the capacity of this <tt>ArrayList</tt> instance, if necessary, to ensure that it can hold at least the
+     * number of elements specified by the minimum capacity argument.
+     *
+     * @param minCapacity the desired minimum capacity
+     */
+    public void ensureCapacity(int minCapacity) {
+        if (maxSize < minCapacity) {
+            maxSize = minCapacity;
+            resizeArray();
+        }
+    }
+
+    private void resizeArray() {
+        array = Arrays.copyOf(array, maxSize);
     }
 
     private E replaceElement(int index, E element) {
