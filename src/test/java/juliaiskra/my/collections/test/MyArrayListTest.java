@@ -1,6 +1,6 @@
-package juliaiskra.my.arraylist.test;
+package juliaiskra.my.collections.test;
 
-import juliaiskra.my.arraylist.MyArrayList;
+import juliaiskra.my.collections.MyArrayList;
 import org.junit.Assert;
 import org.junit.Test;
 

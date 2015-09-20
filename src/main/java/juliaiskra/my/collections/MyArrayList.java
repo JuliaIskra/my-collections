@@ -1,4 +1,4 @@
-package juliaiskra.my.arraylist;
+package juliaiskra.my.collections;
 
 import java.lang.reflect.Array;
 import java.util.AbstractList;
@@ -8,13 +8,13 @@ import java.util.Arrays;
  * @author Yuliya Kupryakova
  */
 public class MyArrayList<E> extends AbstractList<E> {
-    private int maxSize = 8;
+    private int capacity = 8;
     private E[] array;
     private int size;
 
     public MyArrayList(Class<E> aClass) {
         //noinspection unchecked
-        array = (E[]) Array.newInstance(aClass, maxSize);
+        array = (E[]) Array.newInstance(aClass, capacity);
         this.size = 0;
     }
 
@@ -28,8 +28,8 @@ public class MyArrayList<E> extends AbstractList<E> {
     public void add(int index, E element) {
         checkIndexBoundsForNewElements(index);
 
-        if (size == maxSize) {
-            maxSize = maxSize * 2;
+        if (size == capacity) {
+            capacity = capacity * 2;
             resizeArray();
         }
 
@@ -66,7 +66,7 @@ public class MyArrayList<E> extends AbstractList<E> {
      * this operation to minimize the storage of an <tt>ArrayList</tt> instance.
      */
     public void trimToSize() {
-        maxSize = size;
+        capacity = size;
         resizeArray();
     }
 
@@ -77,14 +77,14 @@ public class MyArrayList<E> extends AbstractList<E> {
      * @param minCapacity the desired minimum capacity
      */
     public void ensureCapacity(int minCapacity) {
-        if (maxSize < minCapacity) {
-            maxSize = minCapacity;
+        if (capacity < minCapacity) {
+            capacity = minCapacity;
             resizeArray();
         }
     }
 
     private void resizeArray() {
-        array = Arrays.copyOf(array, maxSize);
+        array = Arrays.copyOf(array, capacity);
     }
 
     private E replaceElement(int index, E element) {
