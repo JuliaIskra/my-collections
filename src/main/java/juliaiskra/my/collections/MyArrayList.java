@@ -12,8 +12,10 @@ public class MyArrayList<E> extends AbstractList<E> {
     private E[] array;
     private int size = 0;
     private int offset = 0;
+    private final Class<E> aClass;
 
     public MyArrayList(Class<E> aClass) {
+        this.aClass = aClass;
         //noinspection unchecked
         array = (E[]) Array.newInstance(aClass, capacity);
     }
@@ -36,7 +38,11 @@ public class MyArrayList<E> extends AbstractList<E> {
 
         increaseSize();
         int actualIndex = calculateActualIndex(index);
-        shiftActualArrayFrom(actualIndex);
+        if (closerToLeft(index)) {
+            shiftToLeftFrom(actualIndex);
+        } else {
+            shiftToRightFrom(actualIndex);
+        }
         replaceActualElement(actualIndex, element);
     }
 
@@ -46,7 +52,11 @@ public class MyArrayList<E> extends AbstractList<E> {
 
         int actualIndex = calculateActualIndex(index);
         E old = replaceActualElement(actualIndex, null);
-        shiftActualArrayTo(actualIndex);
+        if (closerToLeft(index)) {
+            shiftFromLeftTo(actualIndex);
+        } else {
+            shiftFromRightTo(actualIndex);
+        }
         decreaseSize();
 
         return old;
@@ -62,8 +72,7 @@ public class MyArrayList<E> extends AbstractList<E> {
      * this operation to minimize the storage of an <tt>ArrayList</tt> instance.
      */
     public void trimToSize() {
-        capacity = size;
-        resizeArray();
+        resizeArray(size);
     }
 
     /**
@@ -74,8 +83,7 @@ public class MyArrayList<E> extends AbstractList<E> {
      */
     public void ensureCapacity(int minCapacity) {
         if (capacity < minCapacity) {
-            capacity = minCapacity;
-            resizeArray();
+            resizeArray(minCapacity);
         }
     }
 
@@ -97,8 +105,7 @@ public class MyArrayList<E> extends AbstractList<E> {
 
     private void increaseSize() {
         if (size == capacity) {
-            capacity = capacity * 2;
-            resizeArray();
+            resizeArray(capacity * 2);
         }
         size++;
     }
@@ -107,53 +114,131 @@ public class MyArrayList<E> extends AbstractList<E> {
         size--;
     }
 
-    private void resizeArray() {
-        // todo add newCapacity as a parameter
-        // todo change implementation
-        array = Arrays.copyOf(array, capacity);
+    private void resizeArray(int newCapacity) {
+        E[] newArray = (E[]) Array.newInstance(aClass, newCapacity);
+        copyInNaturalOrder(array, newArray);
+        array = newArray;
+        capacity = newCapacity;
     }
 
-    private void shiftActualArrayTo(int actualIndex) {
-        // todo implement
-        if (closerToLeft(actualIndex)) {
-            shiftFromLeftTo(actualIndex);
-        } else {
-            shiftFromRightTo(actualIndex);
+    private boolean closerToLeft(int index) {
+        return index < size / 2;
+    }
+
+    private void copyInNaturalOrder(E[] oldArray, E[] newArray) {
+        int oldIndex = offset;
+
+        for (int newIndex = 0; newIndex < size; newIndex++) {
+            newArray[newIndex] = oldArray[oldIndex];
+
+            // move oldIndex to the right, cycling over boundary
+            if (oldIndex == capacity - 1) {
+                oldIndex = 0;
+            } else {
+                oldIndex++;
+            }
         }
-    }
 
-    private boolean closerToLeft(int actualIndex) {
-        //todo implement
-        return false;
+        offset = 0;
     }
 
     private void shiftFromLeftTo(int actualIndex) {
-        // todo implement
+        int fromIndex;
+        for (int toIndex = actualIndex; toIndex != offset; toIndex = fromIndex) {
+            // fromIndex is on the left of toIndex, cycling over boundary
+            if (toIndex == 0) {
+                fromIndex = capacity - 1;
+            } else {
+                fromIndex = toIndex - 1;
+            }
 
-    }
+            array[toIndex] = array[fromIndex];
+        }
 
-    private void shiftFromRightTo(int actualIndex) {
-        // todo implement
+        array[offset] = null;
 
-    }
-
-    private void shiftActualArrayFrom(int actualIndex) {
-        // todo implement
-        if (closerToLeft(actualIndex)) {
-            shiftToLeftFrom(actualIndex);
+        // move offset to the right, cycling over boundary
+        if (offset == capacity - 1) {
+            offset = 0;
         } else {
-            shiftToRightFrom(actualIndex);
+            offset++;
         }
     }
 
-    private void shiftToLeftFrom(int actualIndex) {
-        //todo implement
+    private void shiftFromRightTo(int actualIndex) {
+        int lastOffset = getLastOffset();
 
+        int fromIndex;
+        for (int toIndex = actualIndex; toIndex != lastOffset; toIndex = fromIndex) {
+            // fromIndex is on the right of toIndex, cycling over boundary
+            if (toIndex == capacity - 1) {
+                fromIndex = 0;
+            } else {
+                fromIndex = toIndex + 1;
+            }
+
+            array[toIndex] = array[fromIndex];
+        }
+
+        array[lastOffset] = null;
+
+        // move last offset to the left, cycling over boundary
+//        if (lastOffset == 0) {
+//            lastOffset = capacity - 1;
+//        } else {
+//            lastOffset--;
+//        }
+        // todo save lastOffset
+    }
+
+    private void shiftToLeftFrom(int actualIndex) {
+        // move offset to the left, cycling over boundary
+        if (offset == 0) {
+            offset = capacity - 1;
+        } else {
+            offset--;
+        }
+
+        int fromIndex;
+        for (int toIndex = offset; toIndex != actualIndex; toIndex = fromIndex) {
+            // fromIndex is on the right of toIndex, cycling over boundary
+            if (toIndex == capacity - 1) {
+                fromIndex = 0;
+            } else {
+                fromIndex = toIndex + 1;
+            }
+
+            array[toIndex] = array[fromIndex];
+        }
+
+        array[actualIndex] = null;
     }
 
     private void shiftToRightFrom(int actualIndex) {
-        //todo implement
+        int lastOffset = getLastOffset();
 
+        int fromIndex;
+        for (int toIndex = lastOffset; toIndex != actualIndex; toIndex = fromIndex) {
+            // fromIndex is on the left of toIndex, cycling over boundary
+            if (toIndex == 0) {
+                fromIndex = capacity - 1;
+            } else {
+                fromIndex = toIndex - 1;
+            }
+
+            array[toIndex] = array[fromIndex];
+        }
+
+        array[actualIndex] = null;
+    }
+
+    private int getLastOffset() {
+        int lastOffset = offset + size - 1;
+
+        if (lastOffset >= capacity) {
+            lastOffset = lastOffset - capacity;
+        }
+        return lastOffset;
     }
 
     private E replaceActualElement(int actualIndex, E element) {
