@@ -2,7 +2,6 @@ package juliaiskra.my.collections;
 
 import java.lang.reflect.Array;
 import java.util.AbstractList;
-import java.util.Arrays;
 
 /**
  * @author Yuliya Kupryakova
@@ -36,13 +35,15 @@ public class MyArrayList<E> extends AbstractList<E> {
     public void add(int index, E element) {
         checkIndexBoundsForNewElements(index);
 
-        increaseSize();
+        increaseSizeEnsuringCapacity();
         int actualIndex = calculateActualIndex(index);
         if (closerToLeft(index)) {
             shiftToLeftFrom(actualIndex);
         } else {
             shiftToRightFrom(actualIndex);
         }
+        // recalculate actualIndex because it may change after shifting
+        actualIndex = calculateActualIndex(index);
         replaceActualElement(actualIndex, element);
     }
 
@@ -88,22 +89,18 @@ public class MyArrayList<E> extends AbstractList<E> {
     }
 
     private void checkIndexBoundsForExistingElements(int index) {
-        if (index >= 0 && index < size) {
-            return;
-        } else {
+        if (! (0 <= index && index < size) ) {
             throw new IndexOutOfBoundsException();
         }
     }
 
     private void checkIndexBoundsForNewElements(int index) {
-        if (index >= 0 && index <= size) {
-            return;
-        } else {
+        if (! (0 <= index && index <= size) ) {
             throw new IndexOutOfBoundsException();
         }
     }
 
-    private void increaseSize() {
+    private void increaseSizeEnsuringCapacity() {
         if (size == capacity) {
             resizeArray(capacity * 2);
         }
@@ -181,14 +178,6 @@ public class MyArrayList<E> extends AbstractList<E> {
         }
 
         array[lastOffset] = null;
-
-        // move last offset to the left, cycling over boundary
-//        if (lastOffset == 0) {
-//            lastOffset = capacity - 1;
-//        } else {
-//            lastOffset--;
-//        }
-        // todo save lastOffset
     }
 
     private void shiftToLeftFrom(int actualIndex) {
@@ -210,8 +199,6 @@ public class MyArrayList<E> extends AbstractList<E> {
 
             array[toIndex] = array[fromIndex];
         }
-
-        array[actualIndex] = null;
     }
 
     private void shiftToRightFrom(int actualIndex) {
@@ -228,8 +215,6 @@ public class MyArrayList<E> extends AbstractList<E> {
 
             array[toIndex] = array[fromIndex];
         }
-
-        array[actualIndex] = null;
     }
 
     private int getLastOffset() {
