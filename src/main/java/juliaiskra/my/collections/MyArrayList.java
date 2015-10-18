@@ -127,13 +127,7 @@ public class MyArrayList<E> extends AbstractList<E> {
 
         for (int newIndex = 0; newIndex < size; newIndex++) {
             newArray[newIndex] = oldArray[oldIndex];
-
-            // move oldIndex to the right, cycling over boundary
-            if (oldIndex == capacity - 1) {
-                oldIndex = 0;
-            } else {
-                oldIndex++;
-            }
+            oldIndex = cycleOverBoundary(oldIndex + 1);
         }
 
         offset = 0;
@@ -142,24 +136,12 @@ public class MyArrayList<E> extends AbstractList<E> {
     private void shiftFromLeftTo(int actualIndex) {
         int fromIndex;
         for (int toIndex = actualIndex; toIndex != offset; toIndex = fromIndex) {
-            // fromIndex is on the left of toIndex, cycling over boundary
-            if (toIndex == 0) {
-                fromIndex = capacity - 1;
-            } else {
-                fromIndex = toIndex - 1;
-            }
-
+            fromIndex = cycleOverBoundary(toIndex - 1);
             array[toIndex] = array[fromIndex];
         }
 
         array[offset] = null;
-
-        // move offset to the right, cycling over boundary
-        if (offset == capacity - 1) {
-            offset = 0;
-        } else {
-            offset++;
-        }
+        offset = cycleOverBoundary(offset + 1);
     }
 
     private void shiftFromRightTo(int actualIndex) {
@@ -167,13 +149,7 @@ public class MyArrayList<E> extends AbstractList<E> {
 
         int fromIndex;
         for (int toIndex = actualIndex; toIndex != lastOffset; toIndex = fromIndex) {
-            // fromIndex is on the right of toIndex, cycling over boundary
-            if (toIndex == capacity - 1) {
-                fromIndex = 0;
-            } else {
-                fromIndex = toIndex + 1;
-            }
-
+            fromIndex = cycleOverBoundary(toIndex + 1);
             array[toIndex] = array[fromIndex];
         }
 
@@ -181,22 +157,11 @@ public class MyArrayList<E> extends AbstractList<E> {
     }
 
     private void shiftToLeftFrom(int actualIndex) {
-        // move offset to the left, cycling over boundary
-        if (offset == 0) {
-            offset = capacity - 1;
-        } else {
-            offset--;
-        }
+        offset = cycleOverBoundary(offset - 1);
 
         int fromIndex;
         for (int toIndex = offset; toIndex != actualIndex; toIndex = fromIndex) {
-            // fromIndex is on the right of toIndex, cycling over boundary
-            if (toIndex == capacity - 1) {
-                fromIndex = 0;
-            } else {
-                fromIndex = toIndex + 1;
-            }
-
+            fromIndex = cycleOverBoundary(toIndex + 1);
             array[toIndex] = array[fromIndex];
         }
     }
@@ -206,24 +171,23 @@ public class MyArrayList<E> extends AbstractList<E> {
 
         int fromIndex;
         for (int toIndex = lastOffset; toIndex != actualIndex; toIndex = fromIndex) {
-            // fromIndex is on the left of toIndex, cycling over boundary
-            if (toIndex == 0) {
-                fromIndex = capacity - 1;
-            } else {
-                fromIndex = toIndex - 1;
-            }
-
+            fromIndex = cycleOverBoundary(toIndex - 1);
             array[toIndex] = array[fromIndex];
         }
     }
 
-    private int getLastOffset() {
-        int lastOffset = offset + size - 1;
-
-        if (lastOffset >= capacity) {
-            lastOffset = lastOffset - capacity;
+    private int cycleOverBoundary(int newValue) {
+        if (newValue >= capacity) {
+            return newValue - capacity;
+        } else if (newValue < 0) {
+            return newValue + capacity;
+        } else {
+            return newValue;
         }
-        return lastOffset;
+    }
+
+    private int getLastOffset() {
+        return cycleOverBoundary(offset + size - 1);
     }
 
     private E replaceActualElement(int actualIndex, E element) {
