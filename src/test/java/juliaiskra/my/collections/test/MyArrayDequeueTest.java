@@ -1,16 +1,16 @@
 package juliaiskra.my.collections.test;
 
-import juliaiskra.my.collections.MyArrayList;
+import juliaiskra.my.collections.MyArrayDequeue;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author Yuliya Kupryakova
  */
-public class MyArrayListTest {
+public class MyArrayDequeueTest {
     @Test
     public void testAdditionInTheEnd() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.add(0, "a");
         arrayList.add(1, "b");
         arrayList.add(2, "c");
@@ -22,7 +22,7 @@ public class MyArrayListTest {
 
     @Test
     public void testAdditionInTheMiddle() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.add(0, "a");
         arrayList.add(1, "b");
         arrayList.add(2, "c");
@@ -36,7 +36,7 @@ public class MyArrayListTest {
 
     @Test
     public void testSetting() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.add(0, "a");
         arrayList.add(1, "b");
         arrayList.add(2, "c");
@@ -49,7 +49,7 @@ public class MyArrayListTest {
 
     @Test
     public void testRemovingFromTheEnd() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.add(0, "a");
         arrayList.add(1, "b");
         arrayList.add(2, "c");
@@ -64,7 +64,7 @@ public class MyArrayListTest {
 
     @Test
     public void testRemovingFromTheMiddle() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.add(0, "a");
         arrayList.add(1, "b");
         arrayList.add(2, "c");
@@ -83,13 +83,13 @@ public class MyArrayListTest {
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void testOutOfBoundsGettingInEmptyArrayList() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.get(0);
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void testNegativeOutOfBoundGetting() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.add(0, "a");
         arrayList.add(1, "b");
         arrayList.get(-1);
@@ -97,7 +97,7 @@ public class MyArrayListTest {
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void testOutOfBoundGetting() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.add(0, "a");
         arrayList.add(1, "b");
         Assert.assertEquals("b", arrayList.get(1));
@@ -106,45 +106,45 @@ public class MyArrayListTest {
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void testOutOfBoundSetting() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.set(0, "b");
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void testNegativeOutOfBoundSetting() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.set(-1, "b");
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void testOutOfBoundAddition() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.add(0, "b");
         arrayList.add(2, "b");
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void testNegativeOutOfBoundAddition() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.add(-1, "b");
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void testOutOfBoundRemoving() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.add(0, "b");
         arrayList.remove(1);
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void testNegativeOutOfBoundRemoving() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         arrayList.remove(-1);
     }
 
     @Test
     public void testSize() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         Assert.assertEquals(0, arrayList.size());
 
         arrayList.add(0, "a");
@@ -156,7 +156,7 @@ public class MyArrayListTest {
 
     @Test
     public void testResize() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         Assert.assertEquals(0, arrayList.size());
 
         arrayList.add(0, "0");
@@ -174,7 +174,7 @@ public class MyArrayListTest {
 
     @Test
     public void testResizeBackwards() {
-        MyArrayList<String> arrayList = new MyArrayList<>(String.class);
+        MyArrayDequeue<String> arrayList = new MyArrayDequeue<>(String.class);
         Assert.assertEquals(0, arrayList.size());
 
         arrayList.add(0, "0");

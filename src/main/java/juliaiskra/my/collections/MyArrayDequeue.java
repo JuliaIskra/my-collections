@@ -4,16 +4,18 @@ import java.lang.reflect.Array;
 import java.util.AbstractList;
 
 /**
+ * Could be used as an ArrayList
+ *
  * @author Yuliya Kupryakova
  */
-public class MyArrayList<E> extends AbstractList<E> {
+public class MyArrayDequeue<E> extends AbstractList<E> {
     private int capacity = 8;
     private E[] array;
     private int size = 0;
     private int offset = 0;
     private final Class<E> aClass;
 
-    public MyArrayList(Class<E> aClass) {
+    public MyArrayDequeue(Class<E> aClass) {
         this.aClass = aClass;
         //noinspection unchecked
         array = (E[]) Array.newInstance(aClass, capacity);
