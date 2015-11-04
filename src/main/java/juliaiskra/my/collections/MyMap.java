@@ -3,7 +3,6 @@ package juliaiskra.my.collections;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -11,7 +10,7 @@ import java.util.Set;
  */
 public class MyMap implements Map {
     private int capacity = 10;
-    private Object[] array = (Object[]) Array.newInstance(Object.class, capacity);
+    private Entry[] array = (Entry[]) Array.newInstance(Entry.class, capacity);
 
     @Override
     public int size() {
@@ -21,20 +20,45 @@ public class MyMap implements Map {
 
     @Override
     public Object get(Object key) {
-        int index = calculateHash(key.hashCode());
-        return array[index];
+        Entry entry = getEntry(key, false);
+        if (entry == null) {
+            return null;
+        } else {
+            return entry.getValue();
+        }
     }
 
     @Override
     public Object put(Object key, Object value) {
-        int index = calculateHash(key.hashCode());
-        Object oldValue = get(key);
-        array[index] = value;
+        Entry entry = getEntry(key, true);
+        // todo if (entry == null) then resize
+        Object oldValue = entry.getValue();
+        entry.setValue(value);
         return oldValue;
     }
 
-    private int calculateHash(int hashCode) {
-        return Math.abs(hashCode) % array.length;
+    private Entry getEntry(Object key, boolean shouldCreateEntry) {
+        int index = Math.abs(key.hashCode()) % array.length;
+
+        for (int counter = 0; counter < array.length; counter++) {
+            Entry entry = array[index];
+            if (entry == null) {
+                if (shouldCreateEntry) {
+                    Entry newEntry = new Entry(key, null);
+                    array[index] = newEntry;
+                    return newEntry;
+                }
+                return null;
+            }
+
+            if (entry.getKey().equals(key)) {
+                return entry;
+            }
+
+            index = (index + 1) % array.length;
+        }
+
+        return null;
     }
 
     @Override
@@ -83,7 +107,7 @@ public class MyMap implements Map {
         throw new UnsupportedOperationException();
     }
 
-    private class Entry implements Map.Entry {
+    private class Entry {
         Object key;
         Object value;
 
@@ -92,19 +116,16 @@ public class MyMap implements Map {
             this.value = value;
         }
 
-        @Override
         public Object getKey() {
             return key;
         }
 
-        @Override
         public Object getValue() {
             return value;
         }
 
-        @Override
-        public Object setValue(Object value) {
-            throw new UnsupportedOperationException();
+        public void setValue(Object value) {
+            this.value = value;
         }
     }
 }
