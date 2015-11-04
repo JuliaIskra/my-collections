@@ -20,7 +20,11 @@ public class MyMap implements Map {
 
     @Override
     public Object get(Object key) {
-        Entry entry = getEntry(key, false);
+        int index = findIndex(key);
+        if (index < 0) {
+            return null;
+        }
+        Entry entry = array[index];
         if (entry == null) {
             return null;
         } else {
@@ -30,41 +34,46 @@ public class MyMap implements Map {
 
     @Override
     public Object put(Object key, Object value) {
-        Entry entry = getEntry(key, true);
-        // todo if (entry == null) then resize
+        int index = findIndex(key);
+        Entry entry = array[index];
+        if (entry == null) {
+            entry = new Entry(key);
+            array[index] = entry;
+        }
+        // todo if (index < 0) then resize
         Object oldValue = entry.getValue();
         entry.setValue(value);
         return oldValue;
     }
 
-    private Entry getEntry(Object key, boolean shouldCreateEntry) {
+    private int findIndex(Object key) {
         int index = Math.abs(key.hashCode()) % array.length;
 
         for (int counter = 0; counter < array.length; counter++) {
             Entry entry = array[index];
-            if (entry == null) {
-                if (shouldCreateEntry) {
-                    Entry newEntry = new Entry(key, null);
-                    array[index] = newEntry;
-                    return newEntry;
-                }
-                return null;
-            }
-
-            if (entry.getKey().equals(key)) {
-                return entry;
+            if (entry == null || entry.getKey().equals(key)) {
+                return index;
             }
 
             index = (index + 1) % array.length;
         }
 
-        return null;
+        return -1;
     }
 
     @Override
     public Object remove(Object key) {
-        // todo
-        return null;
+        int index = findIndex(key);
+        if (index < 0) {
+            return null;
+        }
+        Entry entry = array[index];
+        if (entry == null) {
+            return null;
+        } else {
+            array[index] = null;
+            return entry.getValue();
+        }
     }
 
     @Override
@@ -111,9 +120,8 @@ public class MyMap implements Map {
         Object key;
         Object value;
 
-        public Entry(Object key, Object value) {
+        public Entry(Object key) {
             this.key = key;
-            this.value = value;
         }
 
         public Object getKey() {

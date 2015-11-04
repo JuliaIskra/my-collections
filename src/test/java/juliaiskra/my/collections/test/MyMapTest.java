@@ -41,6 +41,16 @@ public class MyMapTest {
         Assert.assertEquals("value2", map.get(key2));
     }
 
+    @Test
+    public void testRemoving() {
+        MyMap map = new MyMap();
+        map.put("key1", "value1");
+        map.put("key2", "value2");
+        map.remove("key1");
+        Assert.assertNull(map.get("key1"));
+        Assert.assertEquals("value2", map.get("key2"));
+    }
+
     // todo test resizing
 
     class ConstantHashCodeKey {
