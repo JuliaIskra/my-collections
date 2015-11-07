@@ -51,7 +51,16 @@ public class MyMapTest {
         Assert.assertEquals("value2", map.get("key2"));
     }
 
-    // todo test resizing
+    @Test
+    public void testResizing() {
+        MyMap map = new MyMap(2);
+        map.put("key1", "value1");
+        map.put("key2", "value2");
+        map.put("key3", "value3");
+        Assert.assertEquals("value1", map.get("key1"));
+        Assert.assertEquals("value2", map.get("key2"));
+        Assert.assertEquals("value3", map.get("key3"));
+    }
 
     class ConstantHashCodeKey {
         @Override
