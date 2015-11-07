@@ -1,7 +1,6 @@
 package juliaiskra.my.collections;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +10,7 @@ import java.util.Set;
  */
 public class MyMap implements Map {
     private Entry[] array;
+    private int size;
 
     public MyMap() {
         this(10);
@@ -18,12 +18,12 @@ public class MyMap implements Map {
 
     public MyMap(int capacity) {
         array = (Entry[]) Array.newInstance(Entry.class, capacity);
+        size = 0;
     }
 
     @Override
     public int size() {
-        // todo
-        return 0;
+        return size;
     }
 
     @Override
@@ -42,22 +42,22 @@ public class MyMap implements Map {
 
     @Override
     public Object put(Object key, Object value) {
-        int index = findIndex(key);
-        if (index < 0) {
-            resize();
-            index = findIndex(key);
+        if (size == array.length) {
+            expand();
         }
+        int index = findIndex(key);
         Entry entry = array[index];
         if (entry == null) {
             entry = new Entry(key);
             array[index] = entry;
+            size++;
         }
         Object oldValue = entry.getValue();
         entry.setValue(value);
         return oldValue;
     }
 
-    private void resize() {
+    private void expand() {
         Entry[] oldArray = array;
         array = (Entry[]) Array.newInstance(Entry.class, oldArray.length * 2);
         for (Entry entry : oldArray) {
@@ -92,6 +92,7 @@ public class MyMap implements Map {
             return null;
         } else {
             array[index] = null;
+            size--;
             return entry.getValue();
         }
     }
