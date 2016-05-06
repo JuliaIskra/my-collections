@@ -6,7 +6,7 @@ import java.util.AbstractList;
 /**
  * Could be used as an ArrayList
  *
- * @author Yuliya Kupryakova
+ * @author Julia Nemtseva
  */
 public class MyArrayDequeue<E> extends AbstractList<E> {
     private int capacity = 8;

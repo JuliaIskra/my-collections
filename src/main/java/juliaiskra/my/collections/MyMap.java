@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by Yuliya on 25.10.2015.
+ * @author Julia Nemtseva
  */
 public class MyMap implements Map {
     private Entry[] array;

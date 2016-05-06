@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Created by Yuliya on 25.10.2015.
+ * @author Julia Nemtseva
  */
 public class MyMapTest {
     @Test

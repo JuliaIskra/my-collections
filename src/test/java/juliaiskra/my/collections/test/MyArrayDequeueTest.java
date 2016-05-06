@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author Yuliya Kupryakova
+ * @author Julia Nemtseva
  */
 public class MyArrayDequeueTest {
     @Test
