@@ -4,7 +4,13 @@ import java.lang.reflect.Array;
 import java.util.AbstractList;
 
 /**
- * Could be used as an ArrayList
+ * Could be used as array list, queue or dequeue.
+ * <p>
+ * Computational complexity for setting and getting an element is O(1). Amortized computational complexity for removing
+ * and adding an element from/to any end is O(1). Computational complexity for removing and adding an element from/to
+ * the middle of the structure is O(n).
+ * <p>
+ * Supports expanding and shifting in both ways.
  *
  * @author Julia Nemtseva
  */
@@ -71,16 +77,16 @@ public class MyArrayDequeue<E> extends AbstractList<E> {
     }
 
     /**
-     * Trims the capacity of this <tt>ArrayList</tt> instance to be the list's current size.  An application can use
-     * this operation to minimize the storage of an <tt>ArrayList</tt> instance.
+     * Trims the capacity of this <tt>MyArrayDequeue</tt> instance to be the list's current size. An application can use
+     * this operation to minimize the storage of an <tt>MyArrayDequeue</tt> instance.
      */
     public void trimToSize() {
         resizeArray(size);
     }
 
     /**
-     * Increases the capacity of this <tt>ArrayList</tt> instance, if necessary, to ensure that it can hold at least the
-     * number of elements specified by the minimum capacity argument.
+     * Increases the capacity of this <tt>MyArrayDequeue</tt> instance, if necessary, to ensure that it can hold at
+     * least the number of elements specified by the minimum capacity argument.
      *
      * @param minCapacity the desired minimum capacity
      */
@@ -91,13 +97,13 @@ public class MyArrayDequeue<E> extends AbstractList<E> {
     }
 
     private void checkIndexBoundsForExistingElements(int index) {
-        if (! (0 <= index && index < size) ) {
+        if (!(0 <= index && index < size)) {
             throw new IndexOutOfBoundsException();
         }
     }
 
     private void checkIndexBoundsForNewElements(int index) {
-        if (! (0 <= index && index <= size) ) {
+        if (!(0 <= index && index <= size)) {
             throw new IndexOutOfBoundsException();
         }
     }
@@ -114,6 +120,7 @@ public class MyArrayDequeue<E> extends AbstractList<E> {
     }
 
     private void resizeArray(int newCapacity) {
+        //noinspection unchecked
         E[] newArray = (E[]) Array.newInstance(aClass, newCapacity);
         copyInNaturalOrder(array, newArray);
         array = newArray;
